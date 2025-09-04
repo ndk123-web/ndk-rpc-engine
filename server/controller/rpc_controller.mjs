@@ -20,7 +20,7 @@ const GiveAuthCode = async (req , res) => {
 
 const RunRpcMethod = async (req , res) => {
     try{
-        console.log("RPC GLOBAL REGISTRY: " , globalRpcRegistry);
+        // console.log("RPC GLOBAL REGISTRY: " , globalRpcRegistry);
         const { method_name , params } = req.body;
         
         // Validate required fields

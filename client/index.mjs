@@ -28,7 +28,7 @@ class Client {
       return { message , ...data };
     } catch (err) {
       // DEBUG
-      console.log(err);
+    //   console.log(err);
       throw new Error("Something went wrong while making request to server");
     }
   }
