@@ -1,19 +1,37 @@
 {
   "name": "ndk-rpc-engine",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Lightweight RPC engine for Node.js with client and server support",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "exports": {
+    "./client": "./client/index.mjs",
+    "./server": "./server/index.mjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "scripts": {
+    "test": "node Test/test_server.mjs",
+    "test:client": "node client/test/test_client.mjs",
+    "example": "node Test/test_server.mjs",
+    "start": "node Test/test_server.mjs"
+  },
+  "files": [
+  "client",
+  "server",
+  "README.md"
+],
+  "keywords": ["rpc", "engine", "nodejs", "client", "server", "ndk", "remote-procedure-call", "api", "microservices", "express"],
+  "author": "Navnath kadam",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ndk123-web/ndk-rpc-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ndk123-web/ndk-rpc-engine/issues"
+  },
+  "homepage": "https://github.com/ndk123-web/ndk-rpc-engine#readme",
   "dependencies": {
     "chalk": "^5.6.0",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "figlet": "^1.8.2",
