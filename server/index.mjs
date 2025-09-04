@@ -23,16 +23,14 @@ class ndk_rpc_server {
 
   async start() {
     app.listen(this.port, () => {
-      console.log("\n");
       console.log(
         chalk.magenta(figlet.textSync("NDK-RPC", { horizontalLayout: "full" }))
       );
       console.log(
-        chalk.greenBright("✅ Server is running at: ") +
+        chalk.greenBright("   Server is running at: ") +
           chalk.yellowBright.bold(`http://localhost:${this.port}`)
       );
       console.log(chalk.cyanBright("📡 Ready to accept RPC requests..."));
-      console.log("\n");
     });
   }
 
