@@ -6,7 +6,7 @@ const client = new Client({
 
 const response = await client.request({
      method : "add",
-     params: { a: 5 , b:3 }  // Array format as expected by server
+     params: { a: 5 , b: 4 }  // Array format as expected by server
 })
 
 console.log("Response from server to Client : " , response);

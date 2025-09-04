@@ -27,7 +27,7 @@ class ndk_rpc_server {
         });
     }
     
-    async register_function(objs) {
+    async register_functions(objs) {
         try {
             if (!Array.isArray(objs)) {
                 throw new ApiError(400, "Input should be an array of objects");
