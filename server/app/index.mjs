@@ -26,7 +26,6 @@ app.use((err, req, res, next) => {
 
 app.use("/api/v1/rpc", rpc_router);
 
-
 app.get("/", (req, res) => {
   res.send("NDK-RPC-Engine is running");
 });
