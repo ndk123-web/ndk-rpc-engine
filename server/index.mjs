@@ -3,6 +3,7 @@ import ApiError from "./utils/ApiError.js";
 import ApiResponse from "./utils/ApiResponse.js";
 import chalk from "chalk";
 import figlet from "figlet";
+import os from "os";
 
 // Global registry to share RPC methods with controllers
 const globalRpcRegistry = {
@@ -10,6 +11,21 @@ const globalRpcRegistry = {
   auth_codes: new Set(),
 };
 
+function getAllIPv4() {
+  const nets = os.networkInterfaces();
+  const results = [];
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // Sirf IPv4 chahiye, aur internal (127.0.0.1) ko ignore karo
+      if (net.family === "IPv4" && !net.internal) {
+        results.push({ interface: name, address: net.address });
+      }
+    }
+  }
+
+  return results;
+}
 // Export the registry so controllers can access it
 
 class ndk_rpc_server {
@@ -30,6 +46,15 @@ class ndk_rpc_server {
         chalk.greenBright("   Server is running at: ") +
           chalk.yellowBright.bold(`http://localhost:${this.port}`)
       );
+      const localIps = getAllIPv4();
+
+      for (let ipObj of localIps) {
+        console.log(
+          chalk.greenBright("   Accessible at: ") +
+            chalk.yellowBright.bold(`http://${ipObj.address}:${this.port}`)
+        );
+      }
+
       console.log(chalk.cyanBright("📡 Ready to accept RPC requests..."));
     });
   }
