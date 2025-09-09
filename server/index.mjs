@@ -57,7 +57,10 @@ class ndk_rpc_server {
       return res.status(500).json(new ApiResponse(500, "Internal Server Error"));
     });
 
-    this.app.use("/api/v1/rpc", rpc_router);
+    this.app.use("/api/v1/rpc", (req , _ , next) => {
+      req.rpc_methods = this.rpc_methods;
+      next();
+    }  , rpc_router);
 
     this.app.get("/", (req, res) => {
       res.send("NDK-RPC-Engine is running on port " + this.port);

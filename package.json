@@ -1,6 +1,6 @@
 {
   "name": "ndk-rpc-engine",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Lightweight RPC engine for Node.js with client and server support",
   "type": "module",
   "exports": {

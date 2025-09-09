@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { globalRpcRegistry } from "../index.mjs";
 import chalk from "chalk";
 import figlet from "figlet";
 
@@ -9,7 +8,7 @@ const GiveAuthCode = async (req, res) => {
   try {
     const auth_code = randomBytes(16).toString("hex");
     // Store auth code in global registry
-    globalRpcRegistry.auth_codes.add(auth_code);
+    rpc_methods.auth_codes.add(auth_code);
     console.log("Generated auth code: ", auth_code);
     const response = new ApiResponse(200, "Auth code generated successfully", {
       auth_code,
@@ -23,23 +22,32 @@ const GiveAuthCode = async (req, res) => {
 
 const RunRpcMethod = async (req, res) => {
   try {
-    // console.log("RPC GLOBAL REGISTRY: " , globalRpcRegistry);
+    // console.log("RPC GLOBAL REGISTRY: " , rpc_methods);
     const { method_name, params } = req.body;
+    const rpc_methods = req.rpc_methods;
+    // console.log("RPC METHODS IN REQ: " , rpc_methods);
+    // Check for valid auth code
 
     // Validate required fields
     if (!method_name) {
-      return res.status(400).json(new ApiResponse(400, "method_name is required"));
+      return res
+        .status(400)
+        .json(new ApiResponse(400, "method_name is required"));
     }
 
     // Find the requested method
-    const methodObj = globalRpcRegistry.methods.find(
+    const methodObj = rpc_methods.find(
       (method) => method.function_name === method_name
     );
 
     if (!methodObj) {
-      console.log(chalk.red("   Method not found: ") + chalk.white(method_name));
+      console.log(
+        chalk.red("   Method not found: ") + chalk.white(method_name)
+      );
       // console.log("Method not found: ", method_name);
-      return res.status(404).json(new ApiResponse(404, `Method '${method_name}' not found`));
+      return res
+        .status(404)
+        .json(new ApiResponse(404, `Method '${method_name}' not found`));
     }
 
     // Execute the method with provided parameters
@@ -67,12 +75,18 @@ const RunRpcMethod = async (req, res) => {
     );
     res.status(200).json(response);
   } catch (err) {
-    console.log(err);
+    console.log(
+      chalk.red("   Error executing RPC method: ") + chalk.white(err.message)
+    );
     if (err instanceof ApiError) {
       const response = new ApiResponse(err.statusCode, err.message);
       return res.status(err.statusCode).json(response);
     }
-    return res.status(500).json(new ApiResponse(500, "Something went wrong while executing RPC method"));
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(500, "Something went wrong while executing RPC method")
+      );
   }
 };
 
