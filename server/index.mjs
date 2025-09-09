@@ -4,6 +4,9 @@ import ApiResponse from "./utils/ApiResponse.js";
 import chalk from "chalk";
 import figlet from "figlet";
 import os from "os";
+import express from "express";
+import cors from "cors";
+import rpc_router from "./routes/rpc-router.mjs";
 
 // Global registry to share RPC methods with controllers
 const globalRpcRegistry = {
@@ -35,23 +38,47 @@ class ndk_rpc_server {
   constructor(port_obj) {
     let { port } = port_obj;
     this.port = port || 3000;
+    this.app = express();
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(
+      cors({
+        origin: "*",
+        allowedHeaders: ["Content-Type", "Authorization"],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      })
+    );
+    this.app.use((err, req, res, next) => {
+      if (err instanceof ApiError) {
+        return res
+          .status(err.statusCode)
+          .json(new ApiResponse(err.statusCode, err.message));
+      }
+      return res.status(500).json(new ApiResponse(500, "Internal Server Error"));
+    });
+
+    this.app.use("/api/v1/rpc", rpc_router);
+
+    this.app.get("/", (req, res) => {
+      res.send("NDK-RPC-Engine is running on port " + this.port);
+    });
   }
 
   async start() {
-    app.listen(this.port, () => {
+    this.app.listen(this.port, () => {
       console.log(
         chalk.magenta(figlet.textSync("NDK-RPC", { horizontalLayout: "full" }))
       );
       console.log(
         chalk.greenBright("   Server is running at: ") +
-          chalk.yellowBright.bold(`http://localhost:${this.port}`)
+        chalk.yellowBright.bold(`http://localhost:${this.port}`)
       );
       const localIps = getAllIPv4();
 
       for (let ipObj of localIps) {
         console.log(
           chalk.greenBright("   Accessible at: ") +
-            chalk.yellowBright.bold(`http://${ipObj.address}:${this.port}`)
+          chalk.yellowBright.bold(`http://${ipObj.address}:${this.port}`)
         );
       }
 

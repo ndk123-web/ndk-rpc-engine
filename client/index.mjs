@@ -19,9 +19,7 @@ class Client {
       );
       if (server_response.status !== 200) {
         const errorData = await server_response.json();
-        throw new Error(
-          `Server error: ${errorData.message || "Unknown error"}`
-        );
+        return { message : errorData.message };
       }
       const responseData = await server_response.json();
       let { data , message } =  responseData;
@@ -29,7 +27,7 @@ class Client {
     } catch (err) {
       // DEBUG
     //   console.log(err);
-      throw new Error("Something went wrong while making request to server");
+      return { message : "Something went wrong while making request to server" };
     }
   }
 }

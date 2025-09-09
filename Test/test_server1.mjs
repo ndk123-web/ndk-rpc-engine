@@ -1,0 +1,14 @@
+import ndk_rpc_server from "../server/index.mjs";
+
+let server = new ndk_rpc_server({ port: 4000 });
+
+const add = ({a, b}) => a + b;
+
+await server.register_functions([
+  {
+    function_name: "add",
+    function_block: add,
+  },
+]);
+
+await server.start();

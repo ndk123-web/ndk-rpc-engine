@@ -28,7 +28,7 @@ const RunRpcMethod = async (req, res) => {
 
     // Validate required fields
     if (!method_name) {
-      throw new ApiError(400, "method_name is required");
+      return res.status(400).json(new ApiResponse(400, "method_name is required"));
     }
 
     // Find the requested method
@@ -37,7 +37,9 @@ const RunRpcMethod = async (req, res) => {
     );
 
     if (!methodObj) {
-      throw new ApiError(404, `Method '${method_name}' not found`);
+      console.log(chalk.red("   Method not found: ") + chalk.white(method_name));
+      // console.log("Method not found: ", method_name);
+      return res.status(404).json(new ApiResponse(404, `Method '${method_name}' not found`));
     }
 
     // Execute the method with provided parameters
@@ -70,7 +72,7 @@ const RunRpcMethod = async (req, res) => {
       const response = new ApiResponse(err.statusCode, err.message);
       return res.status(err.statusCode).json(response);
     }
-    throw new ApiError(500, "Something went wrong while executing RPC method");
+    return res.status(500).json(new ApiResponse(500, "Something went wrong while executing RPC method"));
   }
 };
 
