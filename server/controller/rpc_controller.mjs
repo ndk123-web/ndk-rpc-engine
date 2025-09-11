@@ -8,12 +8,19 @@ import figlet from "figlet";
 const GiveAuthCode = async (req, res) => {
   try {
     const auth_code = randomBytes(16).toString("hex");
+
+    // DEBUG
+    // console.log("Auth Code Request Received");
     // Store auth code in global registry
     globalRpcRegistry.auth_codes.add(auth_code);
     console.log("Generated auth code: ", auth_code);
     const response = new ApiResponse(200, "Auth code generated successfully", {
       auth_code,
     });
+
+    // DEBUG
+    console.log("Auth Code Response Sent", response.data.auth_code);
+
     res.status(200).json(response);
   } catch (err) {
     console.log(err);
@@ -24,7 +31,7 @@ const GiveAuthCode = async (req, res) => {
 const RunRpcMethod = async (req, res) => {
   try {
     // console.log("RPC GLOBAL REGISTRY: " , globalRpcRegistry);
-    const { method_name, params } = req.body;
+    const { method_name, params, auth_code } = req.body;
 
     // Validate required fields
     if (!method_name) {
